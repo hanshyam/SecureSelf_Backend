@@ -17,7 +17,11 @@ import cors from 'cors';
 
 // Enable CORS
 app.use(cors({
+<<<<<<< HEAD
     origin: 'https://secure-self-frontend-ncudo3ekd-ghanshyam-patidars-projects.vercel.app', // Allow requests only from this origin
+=======
+    origin: 'https://secure-self-frontend.vercel.app', // Allow requests only from this origin
+>>>>>>> d09a1e3abbb7619faa5e2a605f71b05c6fffc6bd
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // If you need to handle cookies or auth
 }));
