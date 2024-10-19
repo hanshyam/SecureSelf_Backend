@@ -210,31 +210,40 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 const logout = asyncHandler(async (req, res) => {
-  const cookie = req.cookies;
-  if (!cookie.refreshToken) {
+  const cookies = req.cookies;
+  if (!cookies?.refreshToken) {
     throw new Error("No refresh token is available");
   }
-  const refreshToken = cookie.refreshToken;
+
+  const refreshToken = cookies.refreshToken;
   const user = await userModel.findOne({ refreshToken });
+  
+  // If no user is found, clear the cookie and return
   if (!user) {
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',  // Secure only in production
+      sameSite: 'None',
     });
-    return res.sendStatus(204);
+    return res.sendStatus(204);  // No content
   }
+
+  // Clear the refresh token from the user in the database
   await userModel.findOneAndUpdate(
     { refreshToken },
-    {
-      refreshToken: "",
-    }
+    { refreshToken: "" }
   );
+
+  // Clear the cookie on logout
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',  // Secure only in production
+    sameSite: 'None',
   });
-  res.sendStatus(204);
+
+  res.sendStatus(204);  // Successful logout
 });
+
 
 const getUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
