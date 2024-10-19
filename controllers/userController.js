@@ -154,8 +154,11 @@ const userLogin = asyncHandler(async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      maxAge: 72 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production',  // Enable only in production
+      sameSite: 'None',  // Required for cross-origin requests
+      maxAge: 72 * 60 * 60 * 1000,  // 72 hours
     });
+    
 
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset the time part to only compare the date
